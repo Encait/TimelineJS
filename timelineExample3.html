@@ -1,0 +1,262 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title> TIMELINEJS - Example 3 </title>	
+		
+		<!-- #1 RECOMMENDED LIBRARIES-->
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<link href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+	    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
+
+		<!-- stc ########################## -->
+		<script src="assets/lib/three-r73.js"></script>
+		<script src="assets/lib/timeline.threejs/CSS3DRenderer.js"></script>
+		<script src="assets/lib/timeline.threejs/webutils.js"></script>
+		<script src="assets/lib/timeline.threejs/timeline.three.js"></script>
+		<script src="assets/lib/timeline.threejs/threex.dynamictexture.js"></script>
+		<script src="assets/lib/timeline.threejs/threex.dynamictexture2object.js"></script>
+
+		<script src="assets/lib/stcjs-3.1-tr69/trajectory.js"></script>
+		
+		<script src="assets/lib/simpleheat-gh-pages/simpleheat.js"></script>
+
+		<!-- MAIN SCRIPT -->
+		<script type="text/javascript">
+			var stc;
+			// random example: lat, lng, unix timestamp, label
+			var exampleData = 
+			[
+				40.750919,-73.978355,1356998880,"pu", (Math.random()*10),
+				40.750919,-73.978355,1356999660,"do", (Math.random()*10),
+				40.750919,-73.978355,1356999840,"pu", (Math.random()*10),
+				40.750919,-73.978355,1357000140,"do", (Math.random()*10),
+				40.750919,-73.978355,1357000260,"pu", (Math.random()*10),
+				40.721375,-74.000313,1357001280,"do", (Math.random()*10),
+				40.693485,-73.988731,1357001400,"pu", (Math.random()*10),
+				40.678234,-73.982559,1357002240,"do", (Math.random()*10),
+				40.678234,-73.982559,1357002840,"pu", (Math.random()*10),
+				40.678234,-73.982559,1357003020,"do", (Math.random()*10),
+				40.678234,-73.982559,1357003080,"pu", (Math.random()*10),
+				40.678234,-73.982559,1357003200,"do", (Math.random()*10),
+				40.678234,-73.982559,1357003260,"pu", (Math.random()*10),
+				40.695877,-73.969681,1357003980,"do", (Math.random()*10),
+				40.695877,-73.969681,1357004040,"pu", (Math.random()*10),
+				40.719265,-73.990105,1357005360,"do", (Math.random()*10),
+				40.752537,-73.973068,1357005540,"pu", (Math.random()*10),
+				40.784702,-73.96756,1357006620,"do", (Math.random()*10),
+				40.784702,-73.96756,1357006740,"pu", (Math.random()*10),
+				40.805027,-73.966026,1357007400,"do", (Math.random()*10),
+				40.809155,-73.963219,1357008300,"pu", (Math.random()*10),
+				40.809155,-73.963219,1357008540,"do", (Math.random()*10),
+				40.809155,-73.963219,1357008660,"pu", (Math.random()*10),
+				40.77346,-73.982292,1357009080,"do", (Math.random()*10),
+				40.77346,-73.982292,1357009260,"pu", (Math.random()*10),
+				40.768909,-73.972336,1357009920,"do", (Math.random()*10),
+				40.749107,-73.972672,1357011300,"pu", (Math.random()*10),
+				40.742382,-73.982605,1357011540,"do", (Math.random()*10),
+				40.742382,-73.982605,1357011840,"pu", (Math.random()*10),
+				40.770309,-73.975296,1357012920,"do", (Math.random()*10),
+				40.780144,-73.981598,1357013100,"pu", (Math.random()*10),
+				40.769482,-73.984612,1357013340,"do", (Math.random()*10),
+				40.769482,-73.984612,1357013400,"pu", (Math.random()*10),
+				40.769482,-73.984612,1357013640,"do", (Math.random()*10),
+				40.769482,-73.984612,1357013880,"pu", (Math.random()*10),
+				40.836224,-73.94812,1357014780,"do", (Math.random()*10),
+				40.836224,-73.94812,1357014840,"pu", (Math.random()*10),
+				40.836224,-73.94812,1357015020,"do", (Math.random()*10),
+				40.777885,-73.989906,1357015920,"pu", (Math.random()*10),
+				40.756218,-73.987045,1357016520,"do", (Math.random()*10),
+				40.756218,-73.987045,1357016520,"pu", (Math.random()*10),
+				40.734489,-73.990067,1357017180,"do", (Math.random()*10),
+				40.749523,-73.945267,1357060500,"pu", (Math.random()*10),
+				40.743221,-73.920731,1357060740,"do", (Math.random()*10),
+				40.743221,-73.920731,1357060920,"pu", (Math.random()*10),
+				40.743221,-73.920731,1357061040,"do", (Math.random()*10),
+				40.759716,-73.961014,1357061820,"pu", (Math.random()*10),
+				40.747086,-73.974258,1357062060,"do", (Math.random()*10),
+				40.735352,-73.98275,1357062240,"pu", (Math.random()*10),
+				40.736252,-73.994049,1357062540,"do", (Math.random()*10),
+				40.733307,-74.005531,1357063080,"pu", (Math.random()*10),
+				40.733307,-74.005531,1357063320,"do", (Math.random()*10),
+				40.751911,-73.993629,1357063740,"pu", (Math.random()*10),
+				40.757568,-73.983147,1357064640,"do", (Math.random()*10),
+				40.749378,-73.992317,1357065840,"pu", (Math.random()*10),
+				40.737686,-74.000427,1357066140,"do", (Math.random()*10),
+				40.737686,-74.000427,1357066560,"pu", (Math.random()*10),
+				40.748013,-73.996536,1357066860,"do", (Math.random()*10),
+				40.748013,-73.996536,1357067580,"pu", (Math.random()*10),
+				40.743076,-73.977158,1357068600,"do", (Math.random()*10),
+				40.734089,-73.986809,1357069080,"pu", (Math.random()*10),
+				40.743641,-73.979607,1357069380,"do", (Math.random()*10),
+				40.743641,-73.979607,1357069620,"pu", (Math.random()*10)
+			];
+
+			$(window).ready( function(){
+				initTimeline();
+				uploadData();
+			});
+
+			// Create a timeline
+			function initTimeline()
+			{
+				console.log( "initTimeline", exampleData[2], exampleData[ exampleData.length-3 ] );
+				var timelineProps = 
+				{
+					container: document.getElementById("timelineContainer"),
+					startTime: exampleData[2],
+					endTime: exampleData[ exampleData.length-3  ], 
+					timeStep: 1,
+					labelDivision: 0.10,
+					rulerDivision: 0.1,
+					formatValue: function( value ){
+						return value.toFixed( 2 );
+					},
+					baseAttribute: null//"trip_distance"
+				};
+				timeline = new TJSTIMELINE( timelineProps );
+				timeline.drawTimeline();
+
+				timeline.onTimelineMouseHover = onTimelineMouseHover;
+				timeline.onTimelineMouseHoverStop = onTimelineMouseHoverStop;
+				// for more see the documentation
+			}
+
+			function onTimelineMouseHover( event )
+			{
+				console.log("woooooo", event);
+				if( event.zone === TJSTIMELINE.UTILS.ZONE_TYPES.DATA )
+				{
+					if( event.type === TJSTIMELINE.UTILS.OBJECT_TYPES.TIME_POINT_PARTICLE )
+					{
+						var timeMoment = event.layer.data[event.dpi];
+						var htmlText = "Time moment at "+timeMoment.timestamp+" with attribute blah = "+timeMoment.attributes["blah"];
+						$("#info").html( htmlText);
+					}
+					else if( event.type === TJSTIMELINE.UTILS.OBJECT_TYPES.POLY_PERIOD )
+					{
+						var tPer = event.layer.data[event.dpi];
+						var htmlText = "Time period at "+tPer.startTimestamp+" to "+tPer.endTimestamp+" with attribute blah = "+tPer.attributes["blah"];
+						$("#info").html( htmlText);
+					}
+				}
+			}
+
+			function onTimelineMouseHoverStop( event )
+			{
+				$("#info").html( "Highlight information to change this message" );
+			}	
+
+			// Draw data into the timeline
+			function uploadData()
+			{
+				// example for adding some TimeMoment(s) - Points
+				var timePoints = [];
+				for( var i = 0; i < exampleData.length; i+=5 )
+				{
+					var tMoment = new TJSTIMELINE.TimeMoment( exampleData[i+2], {blah: exampleData[i+4]} );
+					timePoints.push( tMoment );
+				}
+				var infoLayer = new TJSTIMELINE.Layer( "Time Moments", timePoints, {
+					linkedFeatures: true,
+					styleTimePoints: styleTimePoints,
+					styleFeatureLinks: styleFeatureLinks
+				});                
+				//timeline.addLayers( [infoLayer], true );
+
+				// example for adding some TimePeriod(s) - ... not points
+				var timePers = [];
+				var a = true;
+				for( var i = 0; i < exampleData.length; i+=10 )
+				{
+
+					var tPeriod = new TJSTIMELINE.TimePeriod( exampleData[i+2], exampleData[i+2+5], {blah: exampleData[i+4]} );
+					if( a )
+						timePers.push( tPeriod );
+					a = !a;
+				}
+				var infoLayer2 = new TJSTIMELINE.Layer( "Time Periods", timePers, {
+					linkedFeatures: true,
+					styleFeatureLinks: styleFeatureLinks,
+					styleTimePeriods: styleTimePeriods
+				});                
+
+
+				timeline.addLayers( [infoLayer, infoLayer2], true );				
+				
+			}
+
+			function styleTimePoints( data, dataPoint, dataPointIndex )
+			{
+				var styleProperties = 
+				{
+					size: 10,
+					colour: new THREE.Color( 0x0000ff ),
+					alpha: 1
+				};
+
+				return new TJSTIMELINE.Style( styleProperties );
+			}
+
+			function styleFeatureLinks( data, dataPoint, dataIndex, dataPointIndex2 )
+			{
+				var styleProperties = 
+				{
+					startColour: new THREE.Color( 0xff0000 ),
+					endColour: new THREE.Color( 0x00ff00 )
+				};
+				return new TJSTIMELINE.Style( styleProperties );
+			}
+
+			function styleTimePeriods( data, dataPoint, dataPointIndex )
+			{
+				var styleProperties = 
+				{
+					startColour: new THREE.Color( 0x0000ff ),
+					endColour: new THREE.Color( 0x00ff00 ),
+					size: 10
+				};
+				return new TJSTIMELINE.Style( styleProperties );
+			}
+
+			function onPlusClick()
+			{
+				timeline.zoomIn();
+			}
+
+			function onMinusClick()
+			{
+				timeline.zoomOut();
+			}
+
+		</script>
+
+		<!-- STYLES -->
+		<style type="text/css">
+			#timelineContainer
+			{
+				width: 700px;
+				height: 300px;
+				border: 1px solid black;
+			}
+
+			.timelineTextSection
+			{
+				font-style: 0.9em;
+			}
+
+		</style>
+	</head>
+	<body>
+		<div id="main_container">
+			<h1>Example #3: Customization and event capture </h1>
+			<div id="timelineContainer"></div>
+			<!-- EXTRA These Control the 'zoom' -->
+			<button id="zoomIn" onclick="onPlusClick()">+</button>
+    		<button id="zoomOut" onclick="onMinusClick()">-</button>
+		</div>
+		<div id="info"> Highlight information to change this message</div>
+	</body>
+</html>

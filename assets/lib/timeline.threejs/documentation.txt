@@ -1,0 +1,346 @@
+########################################################################################################
+########################################################################################################
+TJSTIMELINE
+
+Class representing a timeline
+
+Constructor
+TJSTIMELINE( properties )
+
+@param properties - object with configuration properties, including:
+	container (required):	dom object where the timeline will be set
+	width:					width of the timeline
+	height:					height of the timeline
+	labelDivision:			0.20 (default) - [0,1] value that determines how much 
+							of the timeline's area is used (horizontally) to represent labels (left side)
+	rulerDivision:			0.05 (defaul) - [0,1] valye that determines how much of the 
+							timeline's area is used (vertically) to represent the temporal label
+	margin:					5 (default) - number representing the margin between the timeline
+							and where data is drawn
+	hlineParams:			object representing the style properties of the highlight line(s) 
+							Same parameters as those used in the THREE.LineBasicMaterial
+	baseAttribute:			null (default) - determines which attribute from the data present
+							in the timeline's layer must be represented vertically.
+							If this value is null, the information will just be placed horizontally
+	startTime:				lower time boundary of the timeline
+	endTime:				upper time boundary of the timeline
+	timeStep:				(depricated)
+	firstTimeAxis:			temporal location of the first ruler line???
+	temporalUnity:			value in seconds that defines the gaps between each timeline ruler line
+	formatTimestamp:		function( timestamp ) returns a string with the temporal representation of a given timestamp
+	formatValue:			function( value ) returns a string with the textual representation of a given value 
+							(when baseAttribute != null)
+
+Properties:
+.width 				- same as above
+.heigth 			- same as above
+.ldiv				- same as labelDivision above
+.rdiv 				- same as rulerDivision above
+.baseAttribute		- same as above
+.baseAttributeMax	- max value from .baseAttribute present in the timeline's data 
+.baseAttributeMin	- min value from .baseAttribute present in the timeline's data 
+.startTime			- same as above
+.endTime			- same as above
+.firstTimeAxis		- same as above
+.temporalUnity 		- same as above
+.scene 				- THREE.Scene used to draw the timeline
+.rend 				- THREE.Renderer used to draw the timeline
+.timelineLayers 	- list of layers with information drawn onto the timeline
+.highlightLayers 	- list of (highlight) layers with information drawn onto the timeline
+.timelineUniforms	- uniforms used for THREE.ShaderMaterial objects
+.layerHeight		- 30(default) vertical size of each layer representation
+Methods
+
+
+
+this.onTimelineMouseDoubleClick = function( eventParams ){};	//	console.log( "mouseDoubleClick", eventParams ); };
+this.onTimelineMouseClick = function( eventParams ){};			//	console.log( "mouseClick", eventParams ); };
+this.onTimelineMouseDown = function( eventParams){};			//	console.log( "mouseDown", eventParams ); };
+this.onTimelineMouseRelease = function( eventParams){};			//	console.log( "mouseRelease", eventParams ); };
+this.onTimelineMouseHover = function( eventParams ){};			//	console.log( "--" ); };//"mouseHover", eventParams ); };
+this.onTimelineMouseOut = function( eventParams ){};			//	console.log( "mouseOut", eventParams ); };
+this.onTimelineMouseHoverStop = function( eventParams ){}; 	// console.log( "--" ); };//"mouseHover", eventParams ); };
+this.onTimelinePanStart = function( event ){ };
+this.onTimelinePanStop = function( event ){ };
+this.onTimelineZoom = function( event ){};
+
+.updateTemporalFocus( temporalFocus, start, end )
+	Sets a temporal interval where data should be visible
+	@param temporalFocus 	- true | false - timeline must focus on a particular time boundary?
+	@param start 			- start timestamp
+	@param end 				- end timestamp
+
+.zoomIn()
+	Camera zoom in
+
+.zoomOut()
+	Camera zoom out
+
+.removeTimeline()
+	Clears all objects from the timeline (NOT the data)
+
+.clearTimeline()
+	Clears all data from from the timeline
+
+.drawTimeline()
+	Draws the timeline on the selected containter
+
+.highlightTimeMoment( when, style )
+	Draws a line over the timeline
+	@param when 	- timestamp of highlight location
+	@param style 	- object with line style properties
+
+	@returns uuid of highlight object
+
+.highlightTimePeriod( startTime, endTime, style )
+	Draws an area over the timeline
+	@param startTime 	- timestamp of highlight start location
+	@param endTime 		- timestamp of highlight end location
+	@param style 		- object with line style properties	
+
+	@returns uuid of higlight object
+
+.removeHighlight( highlight )
+	Removes an highlight object from the timeline
+	@param highlight 	- uuid of the highlight object
+
+	@returns true | false if found/removed the highlight
+
+.getTimelineVerticalBoundaries()
+	@returns list with two elements with the vertical boundaries of the timeline
+
+.render()
+	Renders the timeline's scene
+
+.setTimeBoundaries( startTime, endTime, timeStep )
+	Updates the time bondaries of the timeline
+	@param startTime 	- start timestamp
+	@param endTime 		- end timestamp
+	@timeStep 			- not used/depricated
+
+.addLayers( layers, refresh )
+	Adds layers of information into the timeline
+	@param layers 	- list of layers
+	@param refresh 	- true|false to draw the layers after adding them
+
+.getVisibleTime()
+	@returns list with two elements with the time boundaries currently visible inside the timeline
+
+.timestamp2timeline( timestamp )
+	@returns timeline location/coordinate correspondent to a given timestamp
+
+.timeline2timestamp( timelineLocation )
+	@returns the inverse of the method above
+
+.refresh()
+	Same as .render()
+
+.getLayerYIndex( layerName )
+	@param layerName 	- name of the layer
+
+	@returns the y position within the timeline of a layer
+
+.dataValue2TimelineYPos( value )
+	@param value 	- value to convert
+	@returns value converted into a timeline y location - used when .baseAttribute != null
+
+.timelineYPos2DataValue( yPos )
+	@param yPos 	- y pos from the timeline
+	@returns value corresponding to a vertical timeline location
+
+.layerByName( layerName )
+	@returns Layer with layerName
+
+########################################################################################################
+########################################################################################################
+
+TJSTIMELINE.TimeMoment 
+
+Class representing a time point/moment
+
+Constructor
+TJSTIMELINE.TimeMoment( timestamp, attributes )
+	@param timestamp 	- temporal location
+	@param attributes 	- object with thematic information (custom)
+
+Properties
+.timestamp 	- same as above
+.attributes - same as above
+
+Methods
+.setTime( timestamp )
+	Changes timestamp value
+
+.setAttributes( attr )
+	Adds and/or reprlaces attr from .attributes
+
+.equalsTime( otherPoint )
+	@return same time as otherPoint?
+
+.compareTime( timestamp )
+	@returns 0, -1, or 1 depending on the timestamps being the same this object's timestamp being smaller, or higher, respectively
+
+.copy()
+	@return TJSTIMELINE.TimeMoment with the same information as this object
+
+########################################################################################################
+########################################################################################################
+
+TJSTIMELINE.TimeMoment 
+
+Class representing a time period/duration
+
+Constructor
+TJSTIMELINE.TimePeriod( startTimestamp, endTimestamp, attributes )
+	@param startTimestamp 	- start temporal location
+	@param endTimestamp		- end temporal location
+	@param attributes 		- object with thematic information (custom)
+
+Properties
+.startTimestamp - same as above
+.endTimestamp - same as above
+.attributes 	- same as above
+
+
+Methods
+.setTimeBoundaries( start, end )
+	Changes timestamp values
+
+.setAttributes( attr )
+	Adds and/or reprlaces attr from .attributes
+
+.copy()
+	@return TJSTIMELINE.TimePeriod with the same information as this object
+
+
+########################################################################################################
+########################################################################################################
+
+TJSTIMELINE.Highlight
+
+Class representing an highlight in a TJSTIMELINE
+
+Constructor
+TJSTIMELINE.Highlight( timeline, style, startTime, endTime )
+	@param timeline 	- TJSTIMELINE where this highlight will be drawn
+	@param style		- object with the visual properties of this higlight
+	@param startTime 	- start temporal location of higlight
+	@param endTime 		- (optional) end temporal location of higlight - if undefined, this higlight will focus on
+						the time moment represented by startTime
+
+Properties
+.uuid 				- uuid of the highlight
+.timeline 			- same as above
+.style 				- same as above
+.startTime 			- same as above
+.endTime 			- same as above
+.higlightObject 	- list of objects used to represent this highlight
+
+Methods
+.drawHighlight()
+
+.removeHighlight()
+
+########################################################################################################
+########################################################################################################
+TJSTIMELINE.Layer
+
+Class representing a layer with information
+
+Constructor
+TJSTIMELINE.Layer( name, data, properties )
+	@param name 		- string
+	@param data 		- list of TJSTIMELINE.TimeMoment or list of TJSTIMELINE.TimePeriod
+	@param properties 	- object with layer properties... including:
+		linkedFeatures	- true | false - draw lines between the data features
+		styelTimePoints   - function used to determine the styles for temporal point representations
+		styleTimePeriods  - function used to determine the styles for temporal duration representations
+		styleFeatureLinks - function used to determine the styles for the feature linking lines
+		styleHighlights   - function used to determine the styles for feature highlights
+
+Properties
+.name 		- same as above
+.data 		- same as above
+.properties - same as above
+.timeline 	- timeline holding this layer (when applicable)
+
+Methods
+.setTimeline( timeline )
+
+.redrawLayer()
+
+.drawLayer()
+
+.removeLayer()
+
+.switchVisibility()
+	Toggles layer visibility
+
+.setVisibility( visible )
+
+
+
+.highlightFeature( feature, dataIndex, vertexPoint, vertexPoint2 )
+	Probably only used by the timeline
+
+.removeHighlight()
+	Probably only used by the timeline
+
+########################################################################################################
+########################################################################################################
+
+TJSTIMELINE.Style
+
+Class representing a visual style in the timeline
+
+Constructor + Properties
+
+TJSTIMELINE.Style( params )
+	@param properties - object with style properties including
+		.size
+		.width
+		.height
+		.rotation 	- unestested
+		.x 			- smiliar to width
+		.y 			- similar to heigth
+		.alpha
+		.startAlpha
+		.endAlpha
+		.colour
+		.startColour
+		.endColour
+		.texture
+		.linewidth
+		.startlinewidth
+		.startLineWidth
+		.endLinewidth
+		.endLineWidth
+
+########################################################################################################
+########################################################################################################
+
+TJSTIMELINE.UTILS
+
+Object/Class with utility objects and functions
+
+TJSTIMELINE.UTILS.OBJECT_TYPES
+	.TIME_POINT_PARTICLE 	- particle points used to represent time moments
+	.H_TIME_POINT_PARTICLE - particle points used to highlight time moments
+	.POLY_PERIOD 			- cylinder used to represent time periods
+	.LINE 					- line object used to represent feature links
+	NONE 					- ... none...
+
+TJSTIMELINE.UTILS.TIME_FLAGS
+	.ONE_HOUR
+	.ONE_DAY
+	.ONE_WEEK
+	.ONE_MONTH
+	.NONE: -1
+
+TJSTIMELINE.UTILS.ZONE_TYPES
+	.RULER 		- top of the timeline - ruler region
+	.DATA 		- middle of the timeline - data representation region
+	.LABEL 		- left of the timeline - label names/values region
+
+...
+
